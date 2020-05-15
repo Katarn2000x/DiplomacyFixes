@@ -17,55 +17,6 @@ namespace DiplomacyFixes.Patches
     [HarmonyPatch(typeof(KingdomDiplomacyVM))]
     class KingdomDiplomacyVMPatch
     {
-        [HarmonyPrefix]
-        [HarmonyPatch("OnDeclareWar")]
-        public static bool OnDeclareWarPatch(KingdomTruceItemVM item, KingdomDiplomacyVM __instance)
-        {
-            List<TextObject> warExceptions = WarAndPeaceConditions.CanDeclareWarExceptions(item);
-            if (warExceptions.IsEmpty())
-            {
-                float influenceCost = DiplomacyCostCalculator.DetermineInfluenceCostForDeclaringWar(item.Faction1 as Kingdom);
-                DiplomacyCostManager.deductInfluenceFromPlayerClan(influenceCost);
-                DeclareWarAction.Apply(item.Faction1, item.Faction2);
-                try
-                {
-                    __instance.RefreshValues();
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show(e.Message, "");
-                }
-            }
-            else
-            {
-                MessageHelper.SendFailedActionMessage(new TextObject("{=v0cDMIcl}Cannot declare war on this kingdom. ").ToString(), warExceptions);
-            }
-            return false;
-        }
-
-        [HarmonyPrefix]
-        [HarmonyPatch("OnDeclarePeace")]
-        public static bool OnDeclarePeacePatch(KingdomWarItemVM item, KingdomDiplomacyVM __instance)
-        {
-            List<TextObject> peaceExceptions = WarAndPeaceConditions.CanMakePeaceExceptions(item);
-            if (peaceExceptions.IsEmpty())
-            {
-                KingdomPeaceAction.ApplyPeace(item.Faction1 as Kingdom, item.Faction2 as Kingdom);
-                try
-                {
-                    __instance.RefreshValues();
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show(e.Message, "");
-                }
-            }
-            else
-            {
-                MessageHelper.SendFailedActionMessage(new TextObject("{=Pqk3WuGz}Cannot make peace with this kingdom. ").ToString(), peaceExceptions);
-            }
-            return false;
-        }
 
         [HarmonyPostfix]
         [HarmonyPatch("RefreshDiplomacyList")]
@@ -90,14 +41,14 @@ namespace DiplomacyFixes.Patches
             {
                 if (campaignWar.Side1[0] is Kingdom && campaignWar.Side2[0] is Kingdom && !campaignWar.Side1[0].IsMinorFaction && !campaignWar.Side2[0].IsMinorFaction && (campaignWar.Side1[0] == playerKingdom || campaignWar.Side2[0] == playerKingdom))
                 {
-                    playerWars.Add(new KingdomWarItemVMExtensionVM(campaignWar, onItemSelectedAction, onProposePeaceAction));
+                    playerWars.Add(new KingdomWarItemVMExtensionVM(campaignWar, onItemSelectedAction, onProposePeaceAction, __instance.RefreshValues));
                 }
             }
             foreach (Kingdom kingdom in Kingdom.All)
             {
-                if (kingdom != playerKingdom && !kingdom.IsDeactivated && (FactionManager.IsAlliedWithFaction(kingdom, playerKingdom) || FactionManager.IsNeutralWithFaction(kingdom, playerKingdom)))
+                if (kingdom != playerKingdom && !kingdom.IsEliminated && (FactionManager.IsAlliedWithFaction(kingdom, playerKingdom) || FactionManager.IsNeutralWithFaction(kingdom, playerKingdom)))
                 {
-                    playerTruces.Add(new KingdomTruceItemVMExtensionVM(playerKingdom, kingdom, onItemSelectedAction, onDeclareWarAction));
+                    playerTruces.Add(new KingdomTruceItemVMExtensionVM(playerKingdom, kingdom, onItemSelectedAction, onDeclareWarAction, __instance.RefreshValues));
                 }
             }
 

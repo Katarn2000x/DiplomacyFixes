@@ -1,5 +1,6 @@
 ﻿using DiplomacyFixes.Messengers;
 using System;
+using System.Collections.Generic;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.ViewModelCollection.KingdomManagement.KingdomDiplomacy;
 using TaleWorlds.Core;
@@ -10,11 +11,14 @@ namespace DiplomacyFixes.ViewModel
 {
     public class KingdomWarItemVMExtensionVM : KingdomWarItemVM
     {
-        public KingdomWarItemVMExtensionVM(CampaignWar war, Action<KingdomWarItemVM> onSelect, Action<KingdomWarItemVM> onAction) : base(war, onSelect, onAction)
+        private Action _refreshParent;
+        public KingdomWarItemVMExtensionVM(CampaignWar war, Action<KingdomWarItemVM> onSelect, Action<KingdomWarItemVM> onAction, Action refreshParent) : base(war, onSelect, onAction)
         {
             this.SendMessengerActionName = new TextObject("{=cXfcwzPp}Send Messenger").ToString();
             this.InfluenceCost = (int)DiplomacyCostCalculator.DetermineInfluenceCostForMakingPeace(Faction1 as Kingdom);
             this.GoldCost = DiplomacyCostCalculator.DetermineGoldCostForMakingPeace(this.Faction1 as Kingdom, this.Faction2 as Kingdom);
+            this.ActionName = GameTexts.FindText("str_kingdom_propose_peace_action", null).ToString();
+            this._refreshParent = refreshParent;
             UpdateDiplomacyProperties();
         }
 
@@ -29,6 +33,20 @@ namespace DiplomacyFixes.ViewModel
                     (int)WarExhaustionManager.Instance.GetWarExhaustion((Kingdom)this.Faction1, (Kingdom)this.Faction2),
                     (int)WarExhaustionManager.Instance.GetWarExhaustion((Kingdom)this.Faction2, (Kingdom)this.Faction1),
                     new TextObject("{=XmVTQ0bH}War Exhaustion"), this._faction1Color, this._faction2Color, null));
+            }
+        }
+
+        private void ExecuteExecutiveAction()
+        {
+            List<TextObject> peaceExceptions = WarAndPeaceConditions.CanMakePeaceExceptions(this);
+            if (peaceExceptions.IsEmpty())
+            {
+                KingdomPeaceAction.ApplyPeace(Faction1 as Kingdom, Faction2 as Kingdom);
+                this._refreshParent();
+            }
+            else
+            {
+                MessageHelper.SendFailedActionMessage(new TextObject("{=Pqk3WuGz}Cannot make peace with this kingdom. ").ToString(), peaceExceptions);
             }
         }
 
@@ -49,6 +67,9 @@ namespace DiplomacyFixes.ViewModel
             Events.Instance.OnMessengerSent(Faction2Leader.Hero);
             this.UpdateDiplomacyProperties();
         }
+
+        [DataSourceProperty]
+        public string ActionName { get; }
 
         [DataSourceProperty]
         public int SendMessengerInfluenceCost { get; } = (int)DiplomacyCostCalculator.DetermineInfluenceCostForSendingMessenger();

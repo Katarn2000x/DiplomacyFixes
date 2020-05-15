@@ -30,18 +30,21 @@ namespace DiplomacyFixes.CampaignEventBehaviors
                 return;
             }
 
-            RemoveExpiredDecisions();
+            Kingdom playerKingdom;
+            if ((playerKingdom = Clan.PlayerClan.Kingdom) != null)
+            {
+                RemoveExpiredDecisions(playerKingdom);
+            }
+            else
+            {
+                _decisionsToProcess.Clear();
+            }
 
             SettlementClaimantDecision processedDecision = null;
             foreach (SettlementClaimantDecision decision in _decisionsToProcess)
             {
                 processedDecision = decision;
-
-                if (Campaign.Current.KingdomDecisions.Contains(decision))
-                {
-                    ShowKeepFiefInquiry(decision);
-                }
-
+                ShowKeepFiefInquiry(decision, playerKingdom);
                 break;
             }
             if (processedDecision != null)
@@ -50,10 +53,11 @@ namespace DiplomacyFixes.CampaignEventBehaviors
             }
         }
 
-        private void RemoveExpiredDecisions()
+        private void RemoveExpiredDecisions(Kingdom playerKingdom)
         {
+
             IEnumerable<SettlementClaimantDecision> expiredDecisions =
-                _decisionsToProcess.Where(decisionToProcess => !Campaign.Current.KingdomDecisions.Contains(decisionToProcess));
+                _decisionsToProcess.Where(decisionToProcess => !playerKingdom.UnresolvedDecisions.Contains(decisionToProcess));
 
             if (expiredDecisions.Any())
             {
@@ -70,7 +74,7 @@ namespace DiplomacyFixes.CampaignEventBehaviors
             }
         }
 
-        private void ShowKeepFiefInquiry(SettlementClaimantDecision settlementClaimantDecision)
+        private void ShowKeepFiefInquiry(SettlementClaimantDecision settlementClaimantDecision, Kingdom playerKingdom)
         {
             InformationManager.ShowInquiry(
                 new InquiryData(
@@ -82,7 +86,7 @@ namespace DiplomacyFixes.CampaignEventBehaviors
                     () =>
                         {
                             ChangeOwnerOfSettlementAction.ApplyByDefault(Hero.MainHero, settlementClaimantDecision.Settlement);
-                            Campaign.Current.RemoveDecision(settlementClaimantDecision);
+                            playerKingdom.RemoveDecision(settlementClaimantDecision);
                         },
                     null,
                     ""),

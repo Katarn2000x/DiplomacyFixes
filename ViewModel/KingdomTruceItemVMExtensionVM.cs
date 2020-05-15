@@ -1,6 +1,8 @@
 ﻿using DiplomacyFixes.Messengers;
 using System;
+using System.Collections.Generic;
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.Actions;
 using TaleWorlds.CampaignSystem.ViewModelCollection.KingdomManagement.KingdomDiplomacy;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
@@ -10,12 +12,14 @@ namespace DiplomacyFixes.ViewModel
 {
     public class KingdomTruceItemVMExtensionVM : KingdomTruceItemVM
     {
-        // private static string INFLUENCE_COST = "Influence Cost: {0}";
+        private Action _refreshParent;
 
-        public KingdomTruceItemVMExtensionVM(IFaction faction1, IFaction faction2, Action<KingdomDiplomacyItemVM> onSelection, Action<KingdomTruceItemVM> onAction) : base(faction1, faction2, onSelection, onAction)
+        public KingdomTruceItemVMExtensionVM(IFaction faction1, IFaction faction2, Action<KingdomDiplomacyItemVM> onSelection, Action<KingdomTruceItemVM> onAction, Action refreshParent) : base(faction1, faction2, onSelection, onAction)
         {
             this.SendMessengerActionName = new TextObject("{=cXfcwzPp}Send Messenger").ToString();
             this.InfluenceCost = (int)DiplomacyCostCalculator.DetermineInfluenceCostForDeclaringWar(Faction1 as Kingdom);
+            this.ActionName = GameTexts.FindText("str_kingdom_declate_war_action", null).ToString();
+            this._refreshParent = refreshParent;
             UpdateDiplomacyProperties();
         }
 
@@ -24,12 +28,28 @@ namespace DiplomacyFixes.ViewModel
             base.UpdateDiplomacyProperties();
             UpdateActionAvailability();
         }
+        private void ExecuteExecutiveAction()
+        {
+            List<TextObject> warExceptions = WarAndPeaceConditions.CanDeclareWarExceptions(this);
+            if (warExceptions.IsEmpty())
+            {
+                float influenceCost = DiplomacyCostCalculator.DetermineInfluenceCostForDeclaringWar(Faction1 as Kingdom);
+                DiplomacyCostManager.deductInfluenceFromPlayerClan(influenceCost);
+                DeclareWarAction.Apply(Faction1, Faction2);
+                this._refreshParent();
+            }
+            else
+            {
+                MessageHelper.SendFailedActionMessage(new TextObject("{=v0cDMIcl}Cannot declare war on this kingdom. ").ToString(), warExceptions);
+            }
+        }
 
         private void UpdateActionAvailability()
         {
             this.IsMessengerAvailable = MessengerManager.CanSendMessengerWithInfluenceCost(Faction2Leader.Hero, this.SendMessengerInfluenceCost);
             this.IsOptionAvailable = WarAndPeaceConditions.CanDeclareWarExceptions(this).IsEmpty();
         }
+
 
         protected override void OnSelect()
         {
@@ -42,6 +62,9 @@ namespace DiplomacyFixes.ViewModel
             Events.Instance.OnMessengerSent(Faction2Leader.Hero);
             this.UpdateDiplomacyProperties();
         }
+
+        [DataSourceProperty]
+        public string ActionName { get; }
 
         [DataSourceProperty]
         public int SendMessengerInfluenceCost { get; } = (int)DiplomacyCostCalculator.DetermineInfluenceCostForSendingMessenger();

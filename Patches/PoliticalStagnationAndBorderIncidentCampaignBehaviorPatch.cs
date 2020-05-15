@@ -51,7 +51,7 @@ namespace DiplomacyFixes.Patches
                 }
                 if (!flag)
                 {
-                    float scoreOfDeclaringWar = Campaign.Current.Models.DiplomacyModel.GetScoreOfDeclaringWar(kingdom, currentKingdom, false);
+                    float scoreOfDeclaringWar = Campaign.Current.Models.DiplomacyModel.GetScoreOfDeclaringWar(kingdom, currentKingdom);
                     if (scoreOfDeclaringWar > num)
                     {
                         otherKingdom = currentKingdom;
