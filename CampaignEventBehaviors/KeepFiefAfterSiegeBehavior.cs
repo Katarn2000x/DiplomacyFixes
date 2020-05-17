@@ -10,93 +10,78 @@ namespace DiplomacyFixes.CampaignEventBehaviors
 {
     class KeepFiefAfterSiegeBehavior : CampaignBehaviorBase
     {
-        private List<SettlementClaimantDecision> _decisionsToProcess;
+        private List<Settlement> _settlementsToProcess;
 
         public KeepFiefAfterSiegeBehavior()
         {
-            this._decisionsToProcess = new List<SettlementClaimantDecision>();
+            this._settlementsToProcess = new List<Settlement>();
         }
 
         public override void RegisterEvents()
         {
-            CampaignEvents.KingdomDecisionAdded.AddNonSerializedListener(this, AggregateKeepFiefDecisions);
+            CampaignEvents.OnSettlementOwnerChangedEvent.AddNonSerializedListener(this, AggregateKeepFiefDecisions);
             CampaignEvents.HourlyTickEvent.AddNonSerializedListener(this, KeepFief);
         }
 
         private void KeepFief()
         {
-            if (_decisionsToProcess.IsEmpty())
+            if (_settlementsToProcess.IsEmpty())
             {
                 return;
             }
 
-            Kingdom playerKingdom;
-            if ((playerKingdom = Clan.PlayerClan.Kingdom) != null)
+            Kingdom playerKingdom = Clan.PlayerClan.MapFaction as Kingdom;
+            if (playerKingdom == null)
             {
-                RemoveExpiredDecisions(playerKingdom);
-            }
-            else
-            {
-                _decisionsToProcess.Clear();
+                _settlementsToProcess.Clear();
             }
 
-            SettlementClaimantDecision processedDecision = null;
-            foreach (SettlementClaimantDecision decision in _decisionsToProcess)
+            foreach (Settlement settlement in _settlementsToProcess.ToList())
             {
-                processedDecision = decision;
-                ShowKeepFiefInquiry(decision, playerKingdom);
+                _settlementsToProcess.Remove(settlement);
+                if (settlement.OwnerClan.Kingdom != playerKingdom)
+                {
+                    continue;
+                }
+                ShowKeepFiefInquiry(settlement);
                 break;
             }
-            if (processedDecision != null)
-            {
-                _decisionsToProcess.Remove(processedDecision);
-            }
         }
 
-        private void RemoveExpiredDecisions(Kingdom playerKingdom)
+        private void AggregateKeepFiefDecisions(Settlement settlement, bool openToClaim, Hero newOwner, Hero oldOwner, Hero capturerHero, ChangeOwnerOfSettlementAction.ChangeOwnerOfSettlementDetail detail)
         {
-
-            IEnumerable<SettlementClaimantDecision> expiredDecisions =
-                _decisionsToProcess.Where(decisionToProcess => !playerKingdom.UnresolvedDecisions.Contains(decisionToProcess));
-
-            if (expiredDecisions.Any())
+            if (detail == ChangeOwnerOfSettlementAction.ChangeOwnerOfSettlementDetail.BySiege && openToClaim && capturerHero == Hero.MainHero)
             {
-                _decisionsToProcess.RemoveAll(decision => expiredDecisions.Contains(decision));
+                _settlementsToProcess.Add(settlement);
+                settlement.Town.IsOwnerUnassigned = false;
             }
         }
 
-        private void AggregateKeepFiefDecisions(KingdomDecision kingdomDecision, bool isPlayerInvolved)
-        {
-            SettlementClaimantDecision settlementClaimantDecision = kingdomDecision as SettlementClaimantDecision;
-            if (isPlayerInvolved && (settlementClaimantDecision?.Settlement?.LastAttackerParty?.LeaderHero?.IsHumanPlayerCharacter ?? false))
-            {
-                _decisionsToProcess.Add(settlementClaimantDecision);
-            }
-        }
-
-        private void ShowKeepFiefInquiry(SettlementClaimantDecision settlementClaimantDecision, Kingdom playerKingdom)
+        private void ShowKeepFiefInquiry(Settlement settlement)
         {
             InformationManager.ShowInquiry(
                 new InquiryData(
                     new TextObject("{=N06wk0dB}Settlement Captured").ToString(),
-                    GetKeepFiefText(settlementClaimantDecision).ToString(),
+                    GetKeepFiefText(settlement).ToString(),
                     true, true,
                     new TextObject("{=Y94H6XnK}Accept").ToString(),
                     new TextObject("{=cOgmdp9e}Decline").ToString(),
                     () =>
                         {
-                            ChangeOwnerOfSettlementAction.ApplyByDefault(Hero.MainHero, settlementClaimantDecision.Settlement);
-                            playerKingdom.RemoveDecision(settlementClaimantDecision);
+                            ChangeOwnerOfSettlementAction.ApplyByDefault(Hero.MainHero, settlement);
                         },
-                    null,
+                    () =>
+                        {
+                            settlement.Town.IsOwnerUnassigned = true;
+                        },
                     ""),
                 true);
         }
 
-        private TextObject GetKeepFiefText(SettlementClaimantDecision settlementClaimantDecision)
+        private TextObject GetKeepFiefText(Settlement settlement)
         {
             TextObject textObject = new TextObject("{=Zy0yjTha}As the capturer of {SETTLEMENT_NAME}, you have the right of first refusal. Would you like to claim this fief?");
-            textObject.SetTextVariable("SETTLEMENT_NAME", settlementClaimantDecision.Settlement.Name);
+            textObject.SetTextVariable("SETTLEMENT_NAME", settlement.Name);
 
             return textObject;
         }
