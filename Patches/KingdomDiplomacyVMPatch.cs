@@ -17,7 +17,6 @@ namespace DiplomacyFixes.Patches
     [HarmonyPatch(typeof(KingdomDiplomacyVM))]
     class KingdomDiplomacyVMPatch
     {
-
         [HarmonyPostfix]
         [HarmonyPatch("RefreshDiplomacyList")]
         public static void RefreshDiplomacyListPatch(KingdomDiplomacyVM __instance)

@@ -41,7 +41,7 @@ namespace DiplomacyFixes.ViewModel
             List<TextObject> peaceExceptions = WarAndPeaceConditions.CanMakePeaceExceptions(this);
             if (peaceExceptions.IsEmpty())
             {
-                KingdomPeaceAction.ApplyPeace(Faction1 as Kingdom, Faction2 as Kingdom);
+                KingdomPeaceAction.ApplyPeace(Faction1 as Kingdom, Faction2 as Kingdom, forcePlayerCharacterCosts: true);
                 this._refreshParent();
             }
             else
