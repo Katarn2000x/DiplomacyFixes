@@ -282,7 +282,6 @@
     <Compile Include="KingdomPeaceAction.cs" />
     <Compile Include="Patches\DiplomaticBartersBehaviorPatch.cs" />
     <Compile Include="Patches\EncyclopediaDataPatch.cs" />
-    <Compile Include="Patches\PoliticalStagnationAndBorderIncidentCampaignBehaviorPatch.cs" />
     <Compile Include="PlayerHelpers.cs" />
     <Compile Include="ViewModel\EncyclopediaHeroPageVMExtensionVM.cs" />
     <Compile Include="ViewModel\KingdomClanVMExtensionVM.cs" />
