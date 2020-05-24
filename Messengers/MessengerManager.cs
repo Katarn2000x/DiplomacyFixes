@@ -1,5 +1,4 @@
-﻿using Helpers;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
@@ -85,7 +84,7 @@ namespace DiplomacyFixes.Messengers
 
             PartyBase heroParty = PartyBase.MainParty;
             PartyBase targetParty = targetHero.PartyBelongedTo?.Party;
-            
+
             bool isCivilian = false;
             if (targetParty == null)
             {
@@ -94,7 +93,7 @@ namespace DiplomacyFixes.Messengers
             }
 
             PlayerEncounter.Start();
-            PlayerEncounter.Current.SetupFields(heroParty, targetParty);
+            PlayerEncounter.Current.SetupFields(heroParty, targetParty ?? heroParty);
 
             string specialScene = "";
             string sceneLevels = "";

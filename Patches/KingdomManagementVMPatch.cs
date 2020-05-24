@@ -1,15 +1,12 @@
 ﻿using DiplomacyFixes.ViewModel;
 using HarmonyLib;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using TaleWorlds.CampaignSystem.Election;
 using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.CampaignSystem.ViewModelCollection.KingdomManagement;
 using TaleWorlds.CampaignSystem.ViewModelCollection.KingdomManagement.KingdomClan;
+using TaleWorlds.CampaignSystem.ViewModelCollection.KingdomManagement.KingdomDiplomacy;
 
 namespace DiplomacyFixes.Patches
 {
@@ -23,13 +20,18 @@ namespace DiplomacyFixes.Patches
             MethodInfo forceDecideDecision = __instance.GetType().GetMethod("ForceDecideDecision", BindingFlags.NonPublic | BindingFlags.Instance);
             Action<KingdomDecision> forceDecideDecisionAction = (Action<KingdomDecision>)Delegate.CreateDelegate(typeof(Action<KingdomDecision>), __instance, forceDecideDecision);
             __instance.Clan = new KingdomClanVMExtensionVM(forceDecideDecisionAction);
+            __instance.Diplomacy = new KingdomDiplomacyVMExtensionVM(forceDecideDecisionAction);
 
-            KingdomCategoryVM currentCategoryFieldInfo = 
-                (KingdomCategoryVM) typeof(KingdomManagementVM).GetField("_currentCategory", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(__instance);
-            if(currentCategoryFieldInfo is KingdomClanVM)
+            KingdomCategoryVM currentCategoryFieldInfo =
+                (KingdomCategoryVM)typeof(KingdomManagementVM).GetField("_currentCategory", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(__instance);
+            MethodInfo setCurrentCategoryMethodInfo = __instance.GetType().GetMethod("SetCurrentCategory", BindingFlags.NonPublic | BindingFlags.Instance);
+            if (currentCategoryFieldInfo is KingdomClanVM)
             {
-                MethodInfo setCurrentCategoryMethodInfo = __instance.GetType().GetMethod("SetCurrentCategory", BindingFlags.NonPublic | BindingFlags.Instance);
                 setCurrentCategoryMethodInfo.Invoke(__instance, new object[] { __instance.Clan });
+            }
+            else if (currentCategoryFieldInfo is KingdomDiplomacyVM)
+            {
+                setCurrentCategoryMethodInfo.Invoke(__instance, new object[] { __instance.Diplomacy });
             }
         }
     }
