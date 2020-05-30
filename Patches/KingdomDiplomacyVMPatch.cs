@@ -31,13 +31,15 @@ namespace DiplomacyFixes.Patches
 
             Kingdom playerKingdom = Clan.PlayerClan.Kingdom;
 
-            foreach (CampaignWar campaignWar in from w in FactionManager.Instance.CampaignWars
-                                                orderby w.Side1[0].Name.ToString()
-                                                select w)
+            foreach (StanceLink stanceLink in from x in playerKingdom.Stances
+                                              where x.IsAtWar
+                                              select x into w
+                                              orderby w.Faction1.Name.ToString() + w.Faction2.Name.ToString()
+                                              select w)
             {
-                if (campaignWar.Side1[0] is Kingdom && campaignWar.Side2[0] is Kingdom && !campaignWar.Side1[0].IsMinorFaction && !campaignWar.Side2[0].IsMinorFaction && (campaignWar.Side1[0] == playerKingdom || campaignWar.Side2[0] == playerKingdom))
+                if (stanceLink.Faction1 is Kingdom && stanceLink.Faction2 is Kingdom && !stanceLink.Faction1.IsMinorFaction && !stanceLink.Faction2.IsMinorFaction)
                 {
-                    playerWars.Add(new KingdomWarItemVMExtensionVM(campaignWar, onItemSelectedAction, onProposePeaceAction));
+                    playerWars.Add(new KingdomWarItemVMExtensionVM(stanceLink, onItemSelectedAction, onProposePeaceAction));
                 }
             }
             foreach (Kingdom kingdom in Kingdom.All)
