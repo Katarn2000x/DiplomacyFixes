@@ -273,6 +273,7 @@
     <Compile Include="Alliance\AllianceFormedEvent.cs" />
     <Compile Include="Alliance\AllianceScoringModel.cs" />
     <Compile Include="Alliance\BreakAllianceAction.cs" />
+    <Compile Include="Alliance\Conditions\AlliancesEnabled.cs" />
     <Compile Include="Alliance\Conditions\AtPeaceCondition.cs" />
     <Compile Include="Alliance\Conditions\HasEnoughInfluenceCondition.cs" />
     <Compile Include="Alliance\Conditions\NotAlreadyInAllianceCondition.cs" />
@@ -289,7 +290,10 @@
     <Compile Include="GauntletInterfaces\GrantFiefInterface.cs" />
     <Compile Include="GrantFief\GrantFiefAction.cs" />
     <Compile Include="Patches\KingdomDecisionProposalBehaviorPatch.cs" />
+    <Content Include="GUI\Prefabs\KingdomManagement\Diplomacy\Relationship.xml" />
     <Compile Include="Patches\KingdomManagementVMPatch.cs" />
+    <Compile Include="ViewModel\DiplomacyFactionRelationshipVM.cs" />
+    <Compile Include="ViewModel\EncyclopediaFactionPageVMExtensionVM.cs" />
     <Compile Include="ViewModel\GrantFiefItemVM.cs" />
     <Compile Include="ViewModel\GrantFiefSortControllerVM.cs" />
     <Compile Include="ViewModel\GrantFiefVM.cs" />
@@ -313,6 +317,7 @@
     <Compile Include="WarPeace\Conditions\HasEnoughTimeElapsedForPeaceCondition.cs" />
     <Compile Include="WarPeace\Conditions\HasEnoughGoldForPeaceCondition.cs" />
     <Compile Include="WarPeace\Conditions\HasEnoughInfluenceForPeaceCondition.cs" />
+    <Compile Include="WarPeace\Conditions\NoSiegeCondition.cs" />
     <Compile Include="WarPeace\Conditions\SatisfiesQuestConditionsForPeaceCondition.cs" />
     <Compile Include="IDiplomacyCondition.cs" />
     <Compile Include="WarPeace\WarAndPeaceConditions.cs" />
@@ -326,6 +331,7 @@
     <Compile Include="WarExhaustionManager.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="GUI\Prefabs\Encyclopedia\EncyclopediaSubPages\EncyclopediaFactionPage.xml" />
     <Content Include="GUI\Prefabs\Encyclopedia\EncyclopediaSubPages\EncyclopediaHeroPage.xml" />
     <Content Include="GUI\Prefabs\GrantFief\GrantFiefTuple.xml" />
     <Content Include="GUI\Prefabs\GrantFief\GrantFief.xml" />

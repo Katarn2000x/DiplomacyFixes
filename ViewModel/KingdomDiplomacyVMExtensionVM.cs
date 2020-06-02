@@ -1,12 +1,12 @@
-﻿using System;
-using TaleWorlds.CampaignSystem.ViewModelCollection.KingdomManagement.KingdomDiplomacy;
-using TaleWorlds.CampaignSystem.Election;
-using TaleWorlds.Library;
-using TaleWorlds.CampaignSystem;
+﻿using DiplomacyFixes.Alliance;
+using System;
 using System.Reflection;
+using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.Election;
+using TaleWorlds.CampaignSystem.ViewModelCollection.KingdomManagement.KingdomDiplomacy;
 using TaleWorlds.Core;
+using TaleWorlds.Library;
 using TaleWorlds.Localization;
-using DiplomacyFixes.Alliance;
 
 namespace DiplomacyFixes.ViewModel
 {
@@ -51,24 +51,24 @@ namespace DiplomacyFixes.ViewModel
             }
 
 
-			GameTexts.SetVariable("STR", this.PlayerAlliances.Count);
-			this.NumOfPlayerAlliancesText = GameTexts.FindText("str_STR_in_parentheses", null).ToString();
-		}
+            GameTexts.SetVariable("STR", this.PlayerAlliances.Count);
+            this.NumOfPlayerAlliancesText = GameTexts.FindText("str_STR_in_parentheses", null).ToString();
+        }
 
-		private void BreakAlliance(KingdomDiplomacyItemVM item)
-		{
-			BreakAllianceAction.Apply(item.Faction1 as Kingdom, item.Faction2 as Kingdom);
-			RefreshDiplomacyList();
-			RefreshAlliances();
-		}
+        private void BreakAlliance(KingdomDiplomacyItemVM item)
+        {
+            BreakAllianceAction.Apply(item.Faction1 as Kingdom, item.Faction2 as Kingdom);
+            RefreshDiplomacyList();
+            RefreshAlliances();
+        }
 
-		private void OnDiplomacyItemSelection(KingdomDiplomacyItemVM item)
-		{
-			this._onSelectionMethodInfo.Invoke(this as KingdomDiplomacyVM, new object[] { item });
-		}
+        private void OnDiplomacyItemSelection(KingdomDiplomacyItemVM item)
+        {
+            this._onSelectionMethodInfo.Invoke(this as KingdomDiplomacyVM, new object[] { item });
+        }
 
-		[DataSourceProperty]
-		public string PlayerAlliancesText { get; }
+        [DataSourceProperty]
+        public string PlayerAlliancesText { get; }
 
         [DataSourceProperty]
         public string NumOfPlayerAlliancesText
@@ -88,22 +88,22 @@ namespace DiplomacyFixes.ViewModel
         }
 
         [DataSourceProperty]
-		public MBBindingList<KingdomTruceItemVM> PlayerAlliances
-		{
-			get
-			{
-				return this._playerAlliances;
-			}
-			set
-			{
-				if (value != this._playerAlliances)
-				{
-					this._playerAlliances = value;
-					base.OnPropertyChanged("PlayerAlliances");
-				}
-			}
-		}
+        public MBBindingList<KingdomTruceItemVM> PlayerAlliances
+        {
+            get
+            {
+                return this._playerAlliances;
+            }
+            set
+            {
+                if (value != this._playerAlliances)
+                {
+                    this._playerAlliances = value;
+                    base.OnPropertyChanged("PlayerAlliances");
+                }
+            }
+        }
 
 
-	}
+    }
 }

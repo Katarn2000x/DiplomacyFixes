@@ -62,9 +62,13 @@ namespace DiplomacyFixes
         [SettingPropertyGroup(HeadingKingdomDiplomacy)]
         public int DeclareWarCooldownInDays { get; set; } = 10;
 
+        [SettingPropertyBool("{=2XC8QHkl}Enable Alliances", RequireRestart = false, HintText = "{=5YJBZx28}If disabled, this disables the ability to form alliances for both player and AI factions. Default value is enabled.")]
+        [SettingPropertyGroup(HeadingKingdomDiplomacy)]
+        public bool EnableAlliances { get; set; } = true;
+
         [SettingPropertyInteger("{=H6XMjwpF}Minimum Alliance Duration in Days", 0, 500, Order = 3, RequireRestart = false, HintText = "{=RrsWhIWi}The minimum duration (in days) that an alliance can last. Default value is 10.")]
         [SettingPropertyGroup(HeadingKingdomDiplomacy)]
-        public int MinimumAllianceDuration { get; internal set; } = 10;
+        public int MinimumAllianceDuration { get; set; } = 10;
 
         [SettingPropertyInteger("{=qeDOmURl}Send Messenger Influence Cost", 0, 10000, RequireRestart = false, HintText = "{=Lkos6GQb}Influence cost for sending a messenger to another leader. Default value is 10.")]
         [SettingPropertyGroup(HeadingMessengers)]
@@ -105,6 +109,6 @@ namespace DiplomacyFixes
         [SettingPropertyBool("{=jI9NSxtz}Enable Player War Exhaustion Debug Messages", Order = 100, RequireRestart = false, HintText = "{=LYyNbQds}Enables debug messages for war exhaustion added to the player kingdom. Default value is false.")]
         [SettingPropertyGroup(HeadingWarExhaustion)]
         public bool EnableWarExhaustionDebugMessages { get; internal set; } = false;
-        
+
     }
 }
