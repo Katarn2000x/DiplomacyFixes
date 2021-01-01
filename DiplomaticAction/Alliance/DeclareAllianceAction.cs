@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Localization;
@@ -14,7 +15,7 @@ namespace DiplomacyFixes.DiplomaticAction.Alliance
 
         protected override void ApplyInternal(Kingdom proposingKingdom, Kingdom otherKingdom, float? customDurationInDays)
         {
-            FactionManager.DeclareAlliance(proposingKingdom, otherKingdom);
+            DeclareAlliance(proposingKingdom, otherKingdom);
             Events.Instance.OnAllianceFormed(new AllianceEvent(proposingKingdom, otherKingdom));
         }
 
@@ -39,6 +40,15 @@ namespace DiplomacyFixes.DiplomaticAction.Alliance
                 acceptAction,
                 null,
                 ""), true);
+        }
+
+        // Ripped off from TaleWorlds.CampaignSystem.FactionManager.DeclareAlliance which is currently bugged (sets stance to Neutral, not Alliance).
+        public static void DeclareAlliance(IFaction faction1, IFaction faction2)
+        {
+            if (faction1 != faction2 && !faction1.IsBanditFaction && !faction2.IsBanditFaction)
+            {
+                typeof(FactionManager).GetMethod("SetStance", BindingFlags.NonPublic | BindingFlags.Static).Invoke(null, new object[] { faction1, faction2, 2});
+            }
         }
     }
 }
