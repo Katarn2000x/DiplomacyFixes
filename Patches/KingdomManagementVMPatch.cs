@@ -22,9 +22,23 @@ namespace DiplomacyFixes.Patches
             __instance.Clan = new KingdomClanVMExtensionVM(forceDecideDecisionAction);
             __instance.Diplomacy = new KingdomDiplomacyVMExtensionVM(forceDecideDecisionAction);
 
-            KingdomCategoryVM currentCategoryFieldInfo =
-                (KingdomCategoryVM)typeof(KingdomManagementVM).GetField("_currentCategory", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(__instance);
-            MethodInfo setCurrentCategoryMethodInfo = __instance.GetType().GetMethod("SetCurrentCategory", BindingFlags.NonPublic | BindingFlags.Instance);
+            int currentCategoryFieldInfo =
+                (int)typeof(KingdomManagementVM).GetField("_currentCategory", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(__instance);
+            // KingdomCategoryVM currentCategoryFieldInfo =
+            //                (KingdomCategoryVM)typeof(KingdomManagementVM).GetField("_currentCategory", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(__instance);
+            //                        MethodInfo setCurrentCategoryMethodInfo = __instance.GetType().GetMethod("SetCurrentCategory", BindingFlags.NonPublic | BindingFlags.Instance);
+            MethodInfo setCurrentCategoryMethodInfo = __instance.GetType().GetMethod("SetSelectedCategory", BindingFlags.NonPublic | BindingFlags.Instance);
+
+            if (currentCategoryFieldInfo == 0)
+            {
+                setCurrentCategoryMethodInfo.Invoke(__instance, new object[] { __instance.Clan });
+            }
+            else if (currentCategoryFieldInfo == 4)
+            {
+                setCurrentCategoryMethodInfo.Invoke(__instance, new object[] { __instance.Diplomacy });
+            }
+
+            /*
             if (currentCategoryFieldInfo is KingdomClanVM)
             {
                 setCurrentCategoryMethodInfo.Invoke(__instance, new object[] { __instance.Clan });
@@ -33,6 +47,7 @@ namespace DiplomacyFixes.Patches
             {
                 setCurrentCategoryMethodInfo.Invoke(__instance, new object[] { __instance.Diplomacy });
             }
+            */
         }
 
         [HarmonyPrefix]
