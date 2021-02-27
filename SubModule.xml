@@ -1,7 +1,7 @@
 <Module>
-  <Name value="Diplomacy Fixes - Jiro's Build"/>
+  <Name value="Diplomacy Fixes"/>
   <Id value="DiplomacyFixes"/>
-  <Version value="v1.5.6.1"/>
+  <Version value="v1.5.8"/>
   <SingleplayerModule value="true"/>
   <MultiplayerModule value="false"/>
 	<DependedModules>
@@ -16,17 +16,17 @@
 		<DependedModule Id="CustomBattle" />
 	</DependedModules>
 	<DependedModuleMetadatas>
-		<DependedModuleMetadata id="Bannerlord.Harmony" order="LoadBeforeThis" version="v2.0.2" />
-		<DependedModuleMetadata id="Bannerlord.ButterLib" order="LoadBeforeThis" version="v1.0.18" />
-		<DependedModuleMetadata id="Bannerlord.UIExtenderEx" order="LoadBeforeThis" version="v1.0.5" />
-		<DependedModuleMetadata id="Bannerlord.MBOptionScreen" order="LoadBeforeThis" version="v4.1.1" />
+		<DependedModuleMetadata id="Bannerlord.Harmony" order="LoadBeforeThis" version="v2.0.4" />
+		<DependedModuleMetadata id="Bannerlord.ButterLib" order="LoadBeforeThis" version="v1.0.20" />
+		<DependedModuleMetadata id="Bannerlord.UIExtenderEx" order="LoadBeforeThis" version="v2.1.0" />
+		<DependedModuleMetadata id="Bannerlord.MBOptionScreen" order="LoadBeforeThis" version="v4.2.0" />
 		<DependedModuleMetadata id="Bannerlord.MBOptionScreen.MBO" incompatible="true" />
 
-		<DependedModuleMetadata id="Native" order="LoadBeforeThis" version="e1.5.6.*" />
-		<DependedModuleMetadata id="SandBoxCore" order="LoadBeforeThis" version="e1.5.6.*" />
-		<DependedModuleMetadata id="Sandbox" order="LoadBeforeThis" version="e1.5.6.*" />
-		<DependedModuleMetadata id="StoryMode" order="LoadBeforeThis" version="e1.5.6.*" optional="true" />
-		<DependedModuleMetadata id="CustomBattle" order="LoadBeforeThis" version="e1.5.6.*" optional="true" />
+		<DependedModuleMetadata id="Native" order="LoadBeforeThis" version="e1.5.8.*" />
+		<DependedModuleMetadata id="SandBoxCore" order="LoadBeforeThis" version="e1.5.8.*" />
+		<DependedModuleMetadata id="Sandbox" order="LoadBeforeThis" version="e1.5.8.*" />
+		<DependedModuleMetadata id="StoryMode" order="LoadBeforeThis" version="e1.5.8.*" optional="true" />
+		<DependedModuleMetadata id="CustomBattle" order="LoadBeforeThis" version="e1.5.8.*" optional="true" />
 	</DependedModuleMetadatas>
   <SubModules>
     <SubModule>
