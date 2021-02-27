@@ -67,9 +67,7 @@ namespace DiplomacyFixes.ViewModel
 
         private int GetEstimatedRelationValue()
         {
-            ExplainedNumber explainedNumber = new ExplainedNumber((float)GetBaseRelationValueOfCurrentGoldCost(), new StatExplainer(), null);
-            Campaign.Current.Models.DiplomacyModel.GetRelationIncreaseFactor(Hero.MainHero, _clan.Leader, ref explainedNumber);
-            return MBMath.Floor(explainedNumber.ResultNumber);
+            return MBMath.Floor(Campaign.Current.Models.DiplomacyModel.GetRelationIncreaseFactor(Hero.MainHero, _clan.Leader, GetBaseRelationValueOfCurrentGoldCost()));
         }
 
         private void ExecuteCancel()

@@ -15,7 +15,7 @@ namespace DiplomacyFixes.CampaignEventBehaviors
 
         private void ReduceCorruption(Clan clan)
         {
-            if (clan.MapFaction.IsKingdomFaction && !clan.Leader.IsHumanPlayerCharacter && clan.InfluenceChange < 0 && clan.GetCorruption() > 0)
+            if (clan.MapFaction.IsKingdomFaction && !clan.Leader.IsHumanPlayerCharacter && clan.InfluenceChangeExplained.ResultNumber < 0 && clan.GetCorruption() > 0)
             {
 
                 FiefBarterable fiefBarterable = GetBestFiefBarter(clan, out Clan targetClan);

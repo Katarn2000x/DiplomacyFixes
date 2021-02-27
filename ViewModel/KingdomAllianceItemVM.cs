@@ -23,7 +23,7 @@ namespace DiplomacyFixes.ViewModel
         protected override void UpdateActionAvailability()
         {
             base.UpdateActionAvailability();
-            string breakAllianceException = BreakAllianceConditions.Instance.CanApplyExceptions(this, true).FirstOrDefault()?.ToString();
+            var breakAllianceException = BreakAllianceConditions.Instance.CanApplyExceptions(this, true).FirstOrDefault();
             this.ActionHint = breakAllianceException != null ? new HintViewModel(breakAllianceException) : new HintViewModel();
             this.IsOptionAvailable = breakAllianceException == null;
         }

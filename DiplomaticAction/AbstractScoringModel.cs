@@ -23,26 +23,22 @@ namespace DiplomacyFixes.DiplomaticAction
         private static readonly TextObject _weakFaction = new TextObject("{=q5qphBwi}Weak Faction");
         private static readonly TextObject _relationship = new TextObject("{=sygtLRqA}Relationship");
 
-        public virtual ExplainedNumber GetScore(Kingdom kingdom, Kingdom otherKingdom, StatExplainer explanation = null)
+        public virtual ExplainedNumber GetScore(Kingdom kingdom, Kingdom otherKingdom, bool includeDescriptions = false)
         {
-            ExplainedNumber explainedNumber = new ExplainedNumber(Scores.Base, explanation, null);
+            ExplainedNumber explainedNumber = new ExplainedNumber(Scores.Base, includeDescriptions, null);
 
             // weak faction bonus
             if (!kingdom.IsStrong())
-            {
                 explainedNumber.Add(Scores.BelowMedianStrength, _weakFaction);
-            }
 
             // common enemies
             IEnumerable<Kingdom> commonEnemies = FactionManager.GetEnemyKingdoms(kingdom).Intersect(FactionManager.GetEnemyKingdoms(otherKingdom));
             foreach (Kingdom commonEnemy in commonEnemies)
             {
                 TextObject textObject = null;
-                if (explanation != null)
-                {
-                    textObject = new TextObject("{=RqQ4oqvl}War with {ENEMY_KINGDOM}");
-                    textObject.SetTextVariable("ENEMY_KINGDOM", commonEnemy.Name);
-                }
+                if (includeDescriptions)
+                    textObject = new TextObject("{=RqQ4oqvl}War with {ENEMY_KINGDOM}").SetTextVariable("ENEMY_KINGDOM", commonEnemy.Name);
+
                 explainedNumber.Add(Scores.HasCommonEnemy, textObject);
             }
 
@@ -51,21 +47,17 @@ namespace DiplomacyFixes.DiplomaticAction
             foreach (Kingdom alliedEnemy in alliedEnemies)
             {
                 TextObject textObject = null;
-                if (explanation != null)
-                {
-                    textObject = new TextObject("{=cmOSpfyW}Alliance with {ALLIED_KINGDOM}");
-                    textObject.SetTextVariable("ALLIED_KINGDOM", alliedEnemy.Name);
-                }
+                if (includeDescriptions)
+                    textObject = new TextObject("{=cmOSpfyW}Alliance with {ALLIED_KINGDOM}").SetTextVariable("ALLIED_KINGDOM", alliedEnemy.Name);
+
                 explainedNumber.Add(Scores.ExistingAllianceWithEnemy, textObject);
             }
             foreach (Kingdom alliedNeutral in alliedNeutrals)
             {
                 TextObject textObject = null;
-                if (explanation != null)
-                {
-                    textObject = new TextObject("{=cmOSpfyW}Alliance with {ALLIED_KINGDOM}");
-                    textObject.SetTextVariable("ALLIED_KINGDOM", alliedNeutral.Name);
-                }
+                if (includeDescriptions)
+                    textObject = new TextObject("{=cmOSpfyW}Alliance with {ALLIED_KINGDOM}").SetTextVariable("ALLIED_KINGDOM", alliedNeutral.Name);
+
                 explainedNumber.Add(Scores.ExistingAllianceWithNeutral, textObject);
             }
 
@@ -77,10 +69,9 @@ namespace DiplomacyFixes.DiplomaticAction
             if (otherKingdom.GetExpansionismDiplomaticPenalty() < 0)
             {
                 TextObject textObject = null;
-                if (explanation != null)
-                {
+                if (includeDescriptions)
                     textObject = new TextObject("{=CxdpR6w4}Expansionism");
-                }
+
                 explainedNumber.Add(otherKingdom.GetExpansionismDiplomaticPenalty(), textObject);
             }
             return explainedNumber;

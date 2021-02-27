@@ -68,12 +68,12 @@ namespace DiplomacyFixes.ViewModel
         {
             this.IsMessengerAvailable = MessengerManager.CanSendMessengerWithCost(Faction2Leader.Hero, DiplomacyCostCalculator.DetermineCostForSendingMessenger());
             this.IsOptionAvailable = DeclareWarConditions.Instance.CanApplyExceptions(this, true).IsEmpty();
-            string allianceException = FormAllianceConditions.Instance.CanApplyExceptions(this, true).FirstOrDefault()?.ToString();
+            var allianceException = FormAllianceConditions.Instance.CanApplyExceptions(this, true).FirstOrDefault();
             this.IsAllianceAvailable = allianceException == null;
-            string declareWarException = DeclareWarConditions.Instance.CanApplyExceptions(this, true).FirstOrDefault()?.ToString();
+            var declareWarException = DeclareWarConditions.Instance.CanApplyExceptions(this, true).FirstOrDefault();
             this.ActionHint = declareWarException != null ? new HintViewModel(declareWarException) : new HintViewModel();
             this.AllianceHint = allianceException != null ? new HintViewModel(allianceException) : new HintViewModel();
-            string nonAggressionPactException = NonAggressionPactConditions.Instance.CanApplyExceptions(this, true).FirstOrDefault()?.ToString();
+            var nonAggressionPactException = NonAggressionPactConditions.Instance.CanApplyExceptions(this, true).FirstOrDefault();
             this.IsNonAggressionPactAvailable = nonAggressionPactException == null;
             this.NonAggressionPactHint = nonAggressionPactException != null ? new HintViewModel(nonAggressionPactException) : new HintViewModel();
 
@@ -81,39 +81,50 @@ namespace DiplomacyFixes.ViewModel
             this.AllianceInfluenceCost = (int)allianceCost.InfluenceCost.Value;
             this.AllianceGoldCost = (int)allianceCost.GoldCost.Value;
 
-
             HybridCost nonAggressionPactCost = DiplomacyCostCalculator.DetermineCostForFormingNonAggressionPact(Faction1 as Kingdom, Faction2 as Kingdom, true);
             this.NonAggressionPactInfluenceCost = (int)nonAggressionPactCost.InfluenceCost.Value;
             this.NonAggressionPactGoldCost = (int)nonAggressionPactCost.GoldCost.Value;
 
-
-            this.AllianceScoreHint = this.UpdateDiplomacyTooltip(AllianceScoringModel.Instance.GetScore(Faction2 as Kingdom, Faction1 as Kingdom, new StatExplainer()));
-            this.NonAggressionPactScoreHint = this.UpdateDiplomacyTooltip(NonAggressionPactScoringModel.Instance.GetScore(Faction2 as Kingdom, Faction1 as Kingdom, new StatExplainer()));
+            this.AllianceScoreHint = this.UpdateDiplomacyTooltip(AllianceScoringModel.Instance.GetScore(Faction2 as Kingdom, Faction1 as Kingdom, true));
+            this.NonAggressionPactScoreHint = this.UpdateDiplomacyTooltip(NonAggressionPactScoringModel.Instance.GetScore(Faction2 as Kingdom, Faction1 as Kingdom, true));
         }
 
         private static readonly TextObject _plusStr = new TextObject("{=eTw2aNV5}+", null);
         private static readonly TextObject _changeStr = new TextObject("{=XIBUWDlT}Required Score", null);
+
         private BasicTooltipViewModel UpdateDiplomacyTooltip(ExplainedNumber explainedNumber)
         {
-            List<TooltipProperty> list = new List<TooltipProperty>();
+            var list = new List<TooltipProperty>() {
+            new TooltipProperty(
+               new TextObject("{=5r6fsHgm}Current Score").ToString(),
+               string.Format("{0:0.##}", explainedNumber.ResultNumber),
+               0,
+               false,
+               TooltipProperty.TooltipPropertyFlags.Title)
+         };
+
+            foreach (var (name, number) in explainedNumber.GetLines())
             {
-                string value = string.Format("{0:0.##}", explainedNumber.ResultNumber);
-                list.Add(new TooltipProperty(new TextObject("{=5r6fsHgm}Current Score").ToString(), value, 0, false, TooltipProperty.TooltipPropertyFlags.Title));
+                list.Add(new TooltipProperty(
+                   name,
+                   string.Format("{0}{1:0.##}",
+                   (number > 0.001f) ? _plusStr.ToString() : "", number),
+                   0,
+                   false,
+                   TooltipProperty.TooltipPropertyFlags.None));
             }
-            if (explainedNumber.Explainer.Lines.Count > 0)
-            {
-                foreach (StatExplainer.ExplanationLine explanationLine in explainedNumber.Explainer.Lines)
-                {
-                    string value = string.Format("{0}{1:0.##}", (explanationLine.Number > 0.001f) ? _plusStr.ToString() : "", explanationLine.Number);
-                    list.Add(new TooltipProperty(explanationLine.Name, value, 0, false, TooltipProperty.TooltipPropertyFlags.None));
-                }
-            }
+
             list.Add(new TooltipProperty("", string.Empty, 0, false, TooltipProperty.TooltipPropertyFlags.RundownSeperator));
             {
-                float changeValue = explainedNumber.ResultNumber;
-                string value = string.Format("{0:0.##}", AllianceScoringModel.Instance.ScoreThreshold);
-                list.Add(new TooltipProperty(_changeStr.ToString(), value, 0, false, TooltipProperty.TooltipPropertyFlags.RundownResult));
+                list.Add(new TooltipProperty(
+                   _changeStr.ToString(),
+                   string.Format("{0:0.##}",
+                   AllianceScoringModel.Instance.ScoreThreshold),
+                   0,
+                   false,
+                   TooltipProperty.TooltipPropertyFlags.RundownResult));
             }
+
             return new BasicTooltipViewModel(() => list);
         }
 

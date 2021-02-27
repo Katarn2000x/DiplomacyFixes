@@ -32,11 +32,7 @@ namespace DiplomacyFixes.GrantFief
 
         public static int PreviewPositiveRelationChange(Settlement settlement, Hero hero)
         {
-            int relationChange = CalculateBaseRelationChange(settlement);
-            ExplainedNumber explainedNumber = new ExplainedNumber((float)relationChange, new StatExplainer(), null);
-            Campaign.Current.Models.DiplomacyModel.GetRelationIncreaseFactor(Hero.MainHero, hero, ref explainedNumber);
-            relationChange = (int)Math.Floor(explainedNumber.ResultNumber);
-            return relationChange;
+            return (int)Math.Floor(Campaign.Current.Models.DiplomacyModel.GetRelationIncreaseFactor(Hero.MainHero, hero, CalculateBaseRelationChange(settlement)));
         }
 
         public static bool CanGrantFief(Clan targetClan, out string reason)

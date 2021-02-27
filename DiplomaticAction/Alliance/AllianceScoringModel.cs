@@ -6,9 +6,9 @@ namespace DiplomacyFixes.DiplomaticAction.Alliance
     {
         public AllianceScoringModel() : base(new AllianceScores()) { }
 
-        public override ExplainedNumber GetScore(Kingdom kingdom, Kingdom otherKingdom, StatExplainer explanation = null)
+        public override ExplainedNumber GetScore(Kingdom kingdom, Kingdom otherKingdom, bool includeDescriptions = false)
         {
-            return base.GetScore(kingdom, otherKingdom, explanation);
+            return base.GetScore(kingdom, otherKingdom, includeDescriptions);
         }
 
         public class AllianceScores : IScores
