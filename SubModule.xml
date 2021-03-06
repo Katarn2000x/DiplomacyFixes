@@ -1,30 +1,38 @@
 <Module>
   <Name value="Diplomacy Fixes"/>
   <Id value="DiplomacyFixes"/>
-  <Version value="v1.5.11"/>
+  <Version value="v1.5.8.1"/>
   <SingleplayerModule value="true"/>
   <MultiplayerModule value="false"/>
-  <DependedModules>
-    <DependedModule Id="Native"/>
-    <DependedModule Id="SandBoxCore"/>
-    <DependedModule Id="Sandbox"/>
-    <DependedModule Id="CustomBattle"/>
-    <DependedModule Id="StoryMode" />
-  </DependedModules>
+	<DependedModules>
+		<DependedModule Id="Bannerlord.Harmony" />
+		<DependedModule Id="Bannerlord.ButterLib" />
+		<DependedModule Id="Bannerlord.UIExtenderEx" />
+		<DependedModule Id="Bannerlord.MBOptionScreen" />
+		<DependedModule Id="Native" />
+		<DependedModule Id="SandBoxCore" />
+		<DependedModule Id="Sandbox" />
+		<DependedModule Id="StoryMode" />
+		<DependedModule Id="CustomBattle" />
+	</DependedModules>
+	<DependedModuleMetadatas>
+		<DependedModuleMetadata id="Bannerlord.Harmony" order="LoadBeforeThis" version="v2.0.4" />
+		<DependedModuleMetadata id="Bannerlord.ButterLib" order="LoadBeforeThis" version="v1.0.20" />
+		<DependedModuleMetadata id="Bannerlord.UIExtenderEx" order="LoadBeforeThis" version="v2.1.0" />
+		<DependedModuleMetadata id="Bannerlord.MBOptionScreen" order="LoadBeforeThis" version="v4.2.0" />
+		<DependedModuleMetadata id="Bannerlord.MBOptionScreen.MBO" incompatible="true" />
+
+		<DependedModuleMetadata id="Native" order="LoadBeforeThis" version="e1.5.8.*" />
+		<DependedModuleMetadata id="SandBoxCore" order="LoadBeforeThis" version="e1.5.8.*" />
+		<DependedModuleMetadata id="Sandbox" order="LoadBeforeThis" version="e1.5.8.*" />
+		<DependedModuleMetadata id="StoryMode" order="LoadBeforeThis" version="e1.5.8.*" optional="true" />
+		<DependedModuleMetadata id="CustomBattle" order="LoadBeforeThis" version="e1.5.8.*" optional="true" />
+	</DependedModuleMetadatas>
   <SubModules>
     <SubModule>
       <Name value="DiplomacyFixes"/>
       <DLLName value="DiplomacyFixes.dll"/>
       <SubModuleClassType value="DiplomacyFixes.MySubModule"/>
-      <Tags>
-        <Tag key="DedicatedServerType" value="none" />
-        <Tag key="IsNoRenderModeElement" value="false" />
-      </Tags>
-    </SubModule>
-    <SubModule>
-      <Name value="MCMv3 Integrated Loader"/>
-      <DLLName value="MCMv3.dll"/>
-      <SubModuleClassType value="MCM.IntegratedLoaderSubModule"/>
       <Tags>
         <Tag key="DedicatedServerType" value="none" />
         <Tag key="IsNoRenderModeElement" value="false" />

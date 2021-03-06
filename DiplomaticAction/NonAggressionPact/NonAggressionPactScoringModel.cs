@@ -6,9 +6,9 @@ namespace DiplomacyFixes.DiplomaticAction.NonAggressionPact
     {
         public NonAggressionPactScoringModel() : base(new NonAggressionScores()) { }
 
-        public override ExplainedNumber GetScore(Kingdom kingdom, Kingdom otherKingdom, StatExplainer explanation = null)
+        public override ExplainedNumber GetScore(Kingdom kingdom, Kingdom otherKingdom, bool includeDescriptions = false)
         {
-            return base.GetScore(kingdom, otherKingdom, explanation);
+            return base.GetScore(kingdom, otherKingdom, includeDescriptions);
         }
 
         public class NonAggressionScores : IScores

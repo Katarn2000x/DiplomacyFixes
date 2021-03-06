@@ -86,9 +86,8 @@ namespace DiplomacyFixes.ViewModel
         {
             if (DiplomaticAgreementManager.Instance.HasNonAggressionPact(kingdom, faction as Kingdom, out NonAggressionPactAgreement pact))
             {
-                TextObject textObject = new TextObject(StringConstants.DaysRemaining);
-                textObject.SetTextVariable("DAYS_LEFT", (int)Math.Round(pact.EndDate.RemainingDaysFromNow));
-                FactionPacts.Add(new DiplomacyFactionRelationshipVM(kingdom, new HintViewModel(textObject.ToString())));
+                var textObject = new TextObject(StringConstants.DaysRemaining).SetTextVariable("DAYS_LEFT", (int)Math.Round(pact.EndDate.RemainingDaysFromNow));
+                FactionPacts.Add(new DiplomacyFactionRelationshipVM(kingdom, new HintViewModel(textObject)));
             }
         }
 

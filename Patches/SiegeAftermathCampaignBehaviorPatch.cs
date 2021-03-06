@@ -1,11 +1,11 @@
 ﻿using HarmonyLib;
 using TaleWorlds.CampaignSystem;
-using TaleWorlds.CampaignSystem.SandBox;
+using TaleWorlds.CampaignSystem.SandBox.CampaignBehaviors;
 
 namespace DiplomacyFixes.Patches
 {
-    [HarmonyPatch(typeof(GameMenusCallbacks))]
-    class GameMenusCallbacksPatch
+    [HarmonyPatch(typeof(SiegeAftermathCampaignBehavior))]
+    class SiegeAftermathCampaignBehaviorPatch
     {
         [HarmonyPostfix]
         [HarmonyPatch("menu_settlement_taken_on_init")]
