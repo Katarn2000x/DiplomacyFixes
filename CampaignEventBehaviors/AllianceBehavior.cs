@@ -85,6 +85,8 @@ namespace DiplomacyFixes.CampaignEventBehaviors
 
         private static void ConsiderFormingAlliances(Kingdom kingdom)
         {
+            if (kingdom == null) return;
+
             List<Kingdom> potentialAllies = Kingdom.All.Where(otherKingdom => otherKingdom != kingdom).Where(otherKingdom => FormAllianceConditions.Instance.CanApply(kingdom, otherKingdom)).ToList();
 
             foreach (Kingdom potentialAlly in potentialAllies)
@@ -98,6 +100,8 @@ namespace DiplomacyFixes.CampaignEventBehaviors
 
         private static void ConsiderBreakingAlliances(Kingdom kingdom)
         {
+            if (kingdom == null) return;
+
             List<Kingdom> alliedKingdoms = Kingdom.All.Where(otherKingdom => otherKingdom != kingdom).Where(otherKingdom => FactionManager.IsAlliedWithFaction(kingdom, otherKingdom)).ToList();
 
             foreach (Kingdom alliedKingdom in alliedKingdoms)
