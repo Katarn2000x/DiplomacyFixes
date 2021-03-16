@@ -12,7 +12,8 @@ namespace DiplomacyFixes.DiplomaticAction.Usurp
     {
         public static void Apply(Clan usurpingClan)
         {
-            if (Settings.Instance.EnableStorylineProtection && StoryMode.StoryMode.Current.MainStoryLine.MainStoryLineSide == MainStoryLineSide.None)
+            if (Settings.Instance.EnableStorylineProtection
+                && StoryMode.StoryMode.Current?.MainStoryLine?.MainStoryLineSide == MainStoryLineSide.None)
             {
                 InformationManager.ShowInquiry(new InquiryData(
                     new TextObject("{=fQxiCdBA}Main Storyline").ToString(),
@@ -35,7 +36,8 @@ namespace DiplomacyFixes.DiplomaticAction.Usurp
 
         private static void ApplyInternal(Clan usurpingClan)
         {
-            if (Settings.Instance.EnableStorylineProtection && StoryMode.StoryMode.Current.MainStoryLine.MainStoryLineSide == MainStoryLineSide.None)
+            if (Settings.Instance.EnableStorylineProtection
+                && StoryMode.StoryMode.Current?.MainStoryLine?.MainStoryLineSide == MainStoryLineSide.None)
             {
                 if (StoryModeData.IsKingdomImperial(usurpingClan.Kingdom))
                 {

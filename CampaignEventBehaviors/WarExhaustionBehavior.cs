@@ -102,7 +102,7 @@ namespace DiplomacyFixes.CampaignEventBehaviors
             Kingdom opposingKingdom = PlayerHelpers.GetOpposingKingdomIfPlayerKingdomProvided(kingdom1, kingdom2);
             if (opposingKingdom != null)
             {
-                ThirdPhase thirdPhase = StoryMode.StoryMode.Current.MainStoryLine.ThirdPhase;
+                var thirdPhase = StoryMode.StoryMode.Current?.MainStoryLine?.ThirdPhase;
                 isValidQuestState = thirdPhase == null || !thirdPhase.OppositionKingdoms.Contains(opposingKingdom);
             }
             return isValidQuestState;
